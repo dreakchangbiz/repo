@@ -1,27 +1,28 @@
-'use client'
 import { useState } from 'react'
 
-export default function Home() {
+export default function QAInterface() {
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [loading, setLoading] = useState(false)
+  const [history, setHistory] = useState([])
 
   const handleAsk = async () => {
     if (!question.trim()) return
     setLoading(true)
     setAnswer('')
+
     try {
-      const response = await fetch(
-        `https://dreakchang-n8n-free.hf.space/webhook/2cb93ea0-0cda-4d28-a68f-f43926ffc143?question=${encodeURIComponent(
-          question
-        )}`
-      )
-      const text = await response.text()
-      setAnswer(text)
-    } catch (e) {
-      setAnswer('❌ 錯誤：無法取得回應')
+      const response = await fetch(`https://dreakchang-n8n-free.hf.space/webhook/2cb93ea0-0cda-4d28-a68f-f43926ffc143?question=${encodeURIComponent(question)}`)
+      const data = await response.text()
+      setAnswer(data)
+      setHistory(prev => [...prev, { question, answer: data }])
+    } catch (err) {
+      const errorMessage = '❌ 錯誤：無法取得回應，請稍後再試。'
+      setAnswer(errorMessage)
+      setHistory(prev => [...prev, { question, answer: errorMessage }])
     } finally {
       setLoading(false)
+      setQuestion('')
     }
   }
 
@@ -43,9 +44,18 @@ export default function Home() {
         >
           {loading ? '查詢中...' : '送出問題'}
         </button>
-        {answer && (
-          <div className="mt-6 p-4 bg-gray-100 rounded-xl border border-gray-200 whitespace-pre-wrap">
-            <strong className="text-blue-600">回應：</strong> {answer}
+
+        {history.length > 0 && (
+          <div className="mt-6">
+            <h2 className="text-lg font-semibold mb-2 text-gray-700">本次對話記錄：</h2>
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              {history.map((entry, index) => (
+                <div key={index} className="p-4 bg-gray-100 rounded-xl border border-gray-200">
+                  <p><strong className="text-blue-600">問題：</strong> {entry.question}</p>
+                  <p className="mt-2"><strong className="text-green-600">回應：</strong> {entry.answer}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
