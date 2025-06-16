@@ -12,7 +12,7 @@ export default function Home() {
     setAnswer('')
     try {
       const response = await fetch(
-        `https://dreakchang-n8n-free.hf.space/webhook/2cb93ea0-0cda-4d28-a68f-f43926ffc143?Question=${encodeURIComponent(
+        `https://dreakchang-n8n-free.hf.space/webhook/2cb93ea0-0cda-4d28-a68f-f43926ffc143?question=${encodeURIComponent(
           question
         )}`
       )
