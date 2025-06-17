@@ -31,7 +31,7 @@ export default function Home() {
     setQuestion('')
     setLoading(true)
     try {
-      const res = await fetch(`https://dreakchang-n8n-free.hf.space/webhook/2cb93ea0-0cda-4d28-a68f-f43926ffc143?Question=${encodeURIComponent(question)}`)
+      const res = await fetch(`https://dreakchang-n8n-free.hf.space/webhook/2cb93ea0-0cda-4d28-a68f-f43926ffc143?question=${encodeURIComponent(question)}`)
       const text = await res.text()
       setQaHistory((prev) => [...prev, { role: 'bot', content: text }])
       fetchKnowledge()
